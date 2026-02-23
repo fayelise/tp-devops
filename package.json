@@ -1,0 +1,25 @@
+{
+  "name": "tp-devops",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fayelise/tp-devops.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fayelise/tp-devops/issues"
+  },
+  "homepage": "https://github.com/fayelise/tp-devops#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "prom-client": "^15.1.3"
+  }
+}

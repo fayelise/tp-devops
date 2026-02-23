@@ -1,0 +1,4 @@
+additionalScrapeConfigs:
+  - job_name: 'tp-devops'
+    static_configs:
+      - targets: ['tp-devops-service:4000']
