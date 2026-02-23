@@ -8,23 +8,25 @@ pipeline {
 
     stages {
         stage('Install & Test') {
-    steps {
-        sh 'npm install'
-        // Skip tests
-        sh 'echo "Skipping tests"'
-    }
-}
+            steps {
+                sh 'npm ci'
+                echo "Skipping tests"
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t $DOCKER_IMAGE:$DOCKER_TAG ."
+                sh 'docker images'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                withDockerRegistry(credentialsId: 'dockerhub-creds', url: '') {
-                    sh "docker push $DOCKER_IMAGE:$DOCKER_TAG"
+                script {
+                    docker.withRegistry('', 'dockerhub-creds') {
+                        docker.image("$DOCKER_IMAGE:$DOCKER_TAG").push()
+                    }
                 }
             }
         }
@@ -32,7 +34,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh 'kubectl apply -f k8s-deployment.yaml'
+                    sh 'kubectl apply -f k8s-deployment.yaml --kubeconfig=$KUBECONFIG'
+                    sh 'kubectl rollout status deployment tp-devops --kubeconfig=$KUBECONFIG'
                 }
             }
         }
