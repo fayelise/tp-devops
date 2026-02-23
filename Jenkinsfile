@@ -4,17 +4,9 @@ pipeline {
     environment {
         DOCKER_IMAGE = "elise259/td-devops"
         DOCKER_TAG = "latest"
-        KUBE_CONFIG = credentials('kubeconfig')
     }
 
     stages {
-
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/fayelise/td-devops.git'
-            }
-        }
 
         stage('Install & Test') {
             steps {
@@ -31,21 +23,19 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withDockerRegistry(
-                    credentialsId: 'dockerhub-creds',
-                    url: ''
-                ) {
+                withDockerRegistry(credentialsId: 'dockerhub-creds', url: '') {
                     sh "docker push $DOCKER_IMAGE:$DOCKER_TAG"
                 }
             }
         }
-             stage('Deploy to Kubernetes') {
-    steps {
-        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-            sh 'kubectl apply -f k8s-deployment.yaml'
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh 'kubectl apply -f k8s-deployment.yaml'
+                }
+            }
         }
-    }
-}
     }
 
     post {
