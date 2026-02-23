@@ -18,6 +18,18 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
       # Uncomment if your Docker Hub repo is private
       # imagePullSecrets:
       # - name: dockerhub-creds
